@@ -14,6 +14,16 @@ public class Ticket {
     private int RowNum;
     private int SeatNum;
     private double Price; // NUMERIC (14, 2)
+
+    public Ticket() {
+    }
+
+    public Ticket(int roomId, int rowNum, int seatNum, double price) {
+        RoomId = roomId;
+        RowNum = rowNum;
+        SeatNum = seatNum;
+        Price = price;
+    }
     // TODO: Implement JPA mapping
     // Accessing JPA Data with REST: https://spring.io/guides/gs/accessing-data-rest/
     // Spring Boot With SQLite:  https://www.baeldung.com/spring-boot-sqlite
