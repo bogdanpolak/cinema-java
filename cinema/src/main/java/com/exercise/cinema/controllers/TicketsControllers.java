@@ -25,19 +25,22 @@ public class TicketsControllers {
     @PostMapping(consumes = "application/json")
     @ResponseStatus(HttpStatus.CREATED)
     public void addTicket(@RequestBody TicketRequestDto request) {
-        Range<Integer> rowRange = Range.from(Range.Bound.inclusive(1)).to(Range.Bound.inclusive(6));
-        Range<Integer> seatRange = Range.from(Range.Bound.inclusive(1)).to(Range.Bound.inclusive(20));
-        var keyHasText = StringUtils.hasText(request.showKey);
-        var rowHasValidRange = rowRange.contains(request.rowNum);
-        var seatHasValidRange = seatRange.contains(request.seatNum);
-        if ( keyHasText &&  rowHasValidRange && seatHasValidRange) {
-            Ticket existingTicket = ticketRepository.findBySeat( request.showKey, request.rowNum, request.seatNum);
-            if (existingTicket == null) {
-                var ticket = new Ticket(request.showKey, request.rowNum, request.seatNum, 15.00);
-                ticketRepository.saveAndFlush(ticket);
-            } else {
-                throw new InvalidParameterException("Ticket already exists");
-            }
-        }
+        // TODO: GetRoom rows and seats (build: RoomRepository)
+        var rows = 6;
+        var seats = 20;
+        // TODO: Verify showKey with ShowTimes table (ShowTimesRepository)
+        if (!StringUtils.hasText(request.showKey)) throw new InvalidParameterException(
+                "Show Key is invalid and can't be found in ShowTimes table");
+        Range<Integer> rowRange = Range.from(Range.Bound.inclusive(1)).to(Range.Bound.inclusive(rows));
+        Range<Integer> seatRange = Range.from(Range.Bound.inclusive(1)).to(Range.Bound.inclusive(seats));
+        if (!rowRange.contains(request.rowNum) || !seatRange.contains(request.seatNum))
+            throw new InvalidParameterException(
+                    String.format("Incorrect seat position (rowNum:%d, seatNum:%d)",
+                            request.rowNum, request.seatNum));
+        Ticket existingTicket = ticketRepository.findBySeat(request.showKey, request.rowNum, request.seatNum);
+        if (existingTicket != null) throw new InvalidParameterException(
+                "Seat already sold, please choose other");
+        var ticket = new Ticket(request.showKey, request.rowNum, request.seatNum, 15.00);
+        ticketRepository.saveAndFlush(ticket);
     }
 }
