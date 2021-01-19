@@ -1,71 +1,69 @@
 package com.exercise.cinema.models;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity(name = "tickets")
 public class Ticket {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int TicketId;
-    private int RoomId;
-    private int RowNum;
-    private int SeatNum;
-    private double Price; // NUMERIC (14, 2)
+    @Column(name = "ticketid")
+    private int ticketId;
+    @Column(name = "showid")
+    private String showId;
+    @Column(name = "rownum")
+    private int rowNum;
+    @Column(name = "seatnum")
+    private int seatNum;
+    private double price; // NUMERIC (14, 2)
 
     public Ticket() {
     }
 
-    public Ticket(int roomId, int rowNum, int seatNum, double price) {
-        RoomId = roomId;
-        RowNum = rowNum;
-        SeatNum = seatNum;
-        Price = price;
+    public Ticket(String showId, int rowNum, int seatNum, double price) {
+        this.showId = showId;
+        this.rowNum = rowNum;
+        this.seatNum = seatNum;
+        this.price = price;
     }
-    // TODO: Implement JPA mapping
-    // Accessing JPA Data with REST: https://spring.io/guides/gs/accessing-data-rest/
-    // Spring Boot With SQLite:  https://www.baeldung.com/spring-boot-sqlite
 
     public int getTicketId() {
-        return TicketId;
+        return ticketId;
     }
 
     public void setTicketId(int ticketId) {
-        TicketId = ticketId;
+        this.ticketId = ticketId;
     }
 
-    public int getRoomId() {
-        return RoomId;
+    public String getShowId() {
+        return showId;
     }
 
-    public void setRoomId(int roomId) {
-        RoomId = roomId;
+    public void setRoomId(String showId) {
+        this.showId = showId;
     }
 
     public int getRowNum() {
-        return RowNum;
+        return rowNum;
     }
 
     public void setRowNum(int rowNum) {
-        RowNum = rowNum;
+        this.rowNum = rowNum;
     }
 
     public int getSeatNum() {
-        return SeatNum;
+        return seatNum;
     }
 
     public void setSeatNum(int seatNum) {
-        SeatNum = seatNum;
+        this.seatNum = seatNum;
     }
 
     public double getPrice() {
-        return Price;
+        return price;
     }
 
     public void setPrice(double price) {
-        Price = price;
+        this.price = price;
     }
 
 }
