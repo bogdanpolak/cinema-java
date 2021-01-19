@@ -31,9 +31,9 @@ public class TicketsControllers {
         var rowHasValidRange = rowRange.contains(request.rowNum);
         var seatHasValidRange = seatRange.contains(request.seatNum);
         if ( keyHasText &&  rowHasValidRange && seatHasValidRange) {
-            Ticket existingTicket = ticketRepository.findBySeat(1, request.rowNum, request.seatNum);
+            Ticket existingTicket = ticketRepository.findBySeat( request.showKey, request.rowNum, request.seatNum);
             if (existingTicket == null) {
-                var ticket = new Ticket(1, request.rowNum, request.seatNum, 15.00);
+                var ticket = new Ticket(request.showKey, request.rowNum, request.seatNum, 15.00);
                 ticketRepository.saveAndFlush(ticket);
             } else {
                 throw new InvalidParameterException("Ticket already exists");

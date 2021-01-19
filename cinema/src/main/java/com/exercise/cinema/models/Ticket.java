@@ -10,7 +10,7 @@ public class Ticket {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int TicketId;
-    private int RoomId;
+    private String ShowId;
     private int RowNum;
     private int SeatNum;
     private double Price; // NUMERIC (14, 2)
@@ -18,8 +18,8 @@ public class Ticket {
     public Ticket() {
     }
 
-    public Ticket(int roomId, int rowNum, int seatNum, double price) {
-        RoomId = roomId;
+    public Ticket(String showId, int rowNum, int seatNum, double price) {
+        ShowId = showId;
         RowNum = rowNum;
         SeatNum = seatNum;
         Price = price;
@@ -36,12 +36,12 @@ public class Ticket {
         TicketId = ticketId;
     }
 
-    public int getRoomId() {
-        return RoomId;
+    public String getShowId() {
+        return ShowId;
     }
 
-    public void setRoomId(int roomId) {
-        RoomId = roomId;
+    public void setRoomId(String showId) {
+        ShowId = showId;
     }
 
     public int getRowNum() {
