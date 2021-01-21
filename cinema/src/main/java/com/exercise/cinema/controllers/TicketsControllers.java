@@ -1,7 +1,7 @@
 package com.exercise.cinema.controllers;
 
-import com.exercise.cinema.models.Ticket;
-import com.exercise.cinema.repositories.TicketRepository;
+import com.exercise.cinema.models.*;
+import com.exercise.cinema.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Range;
 import org.springframework.http.HttpStatus;
@@ -16,6 +16,8 @@ import java.util.List;
 public class TicketsControllers {
     @Autowired
     private TicketRepository ticketRepository;
+    @Autowired
+    private RoomRepository roomRepository;
 
     @GetMapping
     public List<Ticket> list(){
