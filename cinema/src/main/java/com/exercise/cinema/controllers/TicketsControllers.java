@@ -29,18 +29,22 @@ public class TicketsControllers {
     @PostMapping(consumes = "application/json")
     @ResponseStatus(HttpStatus.CREATED)
     public void addTicket(@RequestBody TicketRequestDto request) {
-        // TODO: GetRoom rows and seats (build: RoomRepository)
-        var rows = 6;
-        var seats = 20;
-        // TODO: Verify showKey with ShowTimes table (ShowTimesRepository)
-        if (!StringUtils.hasText(request.showKey)) throw new InvalidParameterException(
-                "Show Key is invalid and can't be found in ShowTimes table");
+        // ---- Validation: Show Key ----
+        var show = showRepository.findById(request.showKey);
+        if (show.isEmpty()) throw new InvalidParameterException(String.format(
+                "Show Key '%s' is invalid and can't be found in database",
+                request.showKey));
+        // ---- Get room rows and seats ----
+        var roomId = show.get().getRoomId();
+        var room = roomRepository.findById(roomId).get();
+        var rows = room.getRows();
+        var seats = room.getColumns();
         Range<Integer> rowRange = Range.from(Range.Bound.inclusive(1)).to(Range.Bound.inclusive(rows));
         Range<Integer> seatRange = Range.from(Range.Bound.inclusive(1)).to(Range.Bound.inclusive(seats));
         if (!rowRange.contains(request.rowNum) || !seatRange.contains(request.seatNum))
             throw new InvalidParameterException(
-                    String.format("Incorrect seat position (rowNum:%d, seatNum:%d)",
-                            request.rowNum, request.seatNum));
+                    String.format("Incorrect seat position (rowNum:%d, seatNum:%d) in room '%s'",
+                            request.rowNum, request.seatNum, room.getName()));
         Ticket existingTicket = ticketRepository.findBySeat(request.showKey, request.rowNum, request.seatNum);
         if (existingTicket != null) throw new InvalidParameterException(
                 "Seat already sold, please choose other");
