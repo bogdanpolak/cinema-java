@@ -18,6 +18,8 @@ public class TicketsControllers {
     private TicketRepository ticketRepository;
     @Autowired
     private RoomRepository roomRepository;
+    @Autowired
+    private ShowRepository showRepository;
 
     @GetMapping
     public List<Ticket> list(){
