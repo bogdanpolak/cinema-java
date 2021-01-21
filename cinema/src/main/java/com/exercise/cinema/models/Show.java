@@ -15,4 +15,36 @@ public class Show {
     @Column(name = "roomid")
     int roomId;
     Date start;
+
+    public String getShowId() {
+        return showId;
+    }
+
+    public void setShowId(String showId) {
+        this.showId = showId;
+    }
+
+    public int getMoveId() {
+        return moveId;
+    }
+
+    public void setMoveId(int moveId) {
+        this.moveId = moveId;
+    }
+
+    public int getRoomId() {
+        return roomId;
+    }
+
+    public void setRoomId(int roomId) {
+        this.roomId = roomId;
+    }
+
+    public Date getStart() {
+        return start;
+    }
+
+    public void setStart(Date start) {
+        this.start = start;
+    }
 }
