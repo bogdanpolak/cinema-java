@@ -61,8 +61,7 @@ public class TicketsControllers {
                 "Seat (rowNum:%d, seatNum:%d) already booked, please choose other.",
                 rowNum, seatNum));
         // ---- Sell ticket ----
-        var ticket = new Ticket(showKey, rowNum, seatNum,
-                calcTicketPrice(rowNum,rows));
+        var ticket = new Ticket(showKey, rowNum, seatNum, request.getPrice());
         // ---- Store ticket ----
         ticketRepository.saveAndFlush(ticket);
     }
