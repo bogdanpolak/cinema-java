@@ -29,7 +29,7 @@ public class TicketsControllers {
 
     @PostMapping(consumes = "application/json")
     @ResponseStatus(HttpStatus.CREATED)
-    public void buyTicket(@RequestBody TicketRequestDto request) throws InvalidParameterException {
+    public void buyTicket(@RequestBody BuyTicketRequest request) throws InvalidParameterException {
         // ---- Validation: Show Key ----
         var show = showRepository.findById(request.showKey);
         if (show.isEmpty())

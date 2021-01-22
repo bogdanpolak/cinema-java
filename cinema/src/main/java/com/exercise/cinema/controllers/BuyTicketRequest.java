@@ -1,6 +1,6 @@
 package com.exercise.cinema.controllers;
 
-public class TicketRequestDto {
+public class BuyTicketRequest {
     String showKey;
     int rowNum;
     int seatNum;
