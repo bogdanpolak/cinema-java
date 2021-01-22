@@ -1,9 +1,10 @@
-package com.exercise.cinema.controllers;
+package com.exercise.cinema.models;
 
-public class TicketRequestDto {
-    String showKey;
-    int rowNum;
-    int seatNum;
+public class BuyTicketRequest {
+    private String showKey;
+    private int rowNum;
+    private int seatNum;
+    private double price;
 
     public String getShowKey() {
         return showKey;
@@ -28,5 +29,9 @@ public class TicketRequestDto {
     public void setSeatNum(int seatNum) {
         this.seatNum = seatNum;
     }
+
+    public double getPrice() { return price; }
+
+    public void setPrice(double price) { this.price = price; }
 
 }

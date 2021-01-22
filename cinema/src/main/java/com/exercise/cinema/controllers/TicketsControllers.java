@@ -5,7 +5,6 @@ import com.exercise.cinema.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
 import java.security.InvalidParameterException;
 import java.util.List;
 
@@ -30,38 +29,44 @@ public class TicketsControllers {
 
     @PostMapping(consumes = "application/json")
     @ResponseStatus(HttpStatus.CREATED)
-    public void addTicket(@RequestBody TicketRequestDto request) {
+    public void buyTicket(@RequestBody BuyTicketRequest request) throws InvalidParameterException {
+        var showKey = request.getShowKey();
+        var rowNum = request.getRowNum();
+        var seatNum = request.getSeatNum();
+        var price = request.getPrice();
         // ---- Validation: Show Key ----
-        var show = showRepository.findById(request.showKey);
-        if (show.isEmpty()) throw new InvalidParameterException(String.format(
+        var show = showRepository.findById(showKey);
+        if (show.isEmpty())
+            throw new InvalidParameterException(String.format(
                 "Show Key '%s' is invalid and can't be found in database",
-                request.showKey));
+                showKey));
         // ---- Get room rows and seats ----
         var roomId = show.get().getRoomId();
         var room = roomRepository.findById(roomId).get();
         var rows = room.getRows();
         var seats = room.getColumns();
         // ---- Validate seat position ----
-        if (request.rowNum<1 || request.rowNum>rows)
-            throw new InvalidParameterException(
-                    String.format("Incorrect row value: %d. In room '%s' there are %d rows.",
-                            request.rowNum, room.getName(), rows));
-        if (request.seatNum<1 || request.seatNum>seats)
-            throw new InvalidParameterException(
-                    String.format("Incorrect seat value: %d. In row %d there are %d seats.",
-                            request.seatNum, request.rowNum, seats));
+        if (rowNum<1 || rowNum>rows)
+            throw new InvalidParameterException(String.format(
+                "Incorrect row value: %d. In room '%s' there are %d rows.",
+                rowNum, room.getName(), rows));
+        if (seatNum<1 || seatNum>seats)
+            throw new InvalidParameterException(String.format(
+                "Incorrect seat value: %d. In row %d there are %d seats.",
+                seatNum, rowNum, seats));
         // ---- Verification is seat booked ----
         Ticket existingTicket = ticketRepository.findBySeat(
-                request.showKey,
-                request.rowNum,
-                request.seatNum);
-        if (existingTicket != null) throw new InvalidParameterException(String.format(
+                showKey, rowNum, seatNum);
+        if (existingTicket != null)
+            throw new InvalidParameterException(String.format(
                 "Seat (rowNum:%d, seatNum:%d) already booked, please choose other.",
-                request.rowNum, request.seatNum));
+                rowNum, seatNum));
+        // ---- Validation: Price ----
+        if (price <= 0)
+            throw new InvalidParameterException(
+                "Invalid ticket price. Price has to be greater than zero.");
         // ---- Sell ticket ----
-        var ticket = new Ticket(request.showKey,
-                request.rowNum, request.seatNum,
-                calcTicketPrice(request.rowNum,rows));
+        var ticket = new Ticket(showKey, rowNum, seatNum, price);
         // ---- Store ticket ----
         ticketRepository.saveAndFlush(ticket);
     }
