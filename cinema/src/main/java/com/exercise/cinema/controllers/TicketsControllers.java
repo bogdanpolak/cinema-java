@@ -33,6 +33,7 @@ public class TicketsControllers {
         var showKey = request.getShowKey();
         var rowNum = request.getRowNum();
         var seatNum = request.getSeatNum();
+        var price = request.getPrice();
         // ---- Validation: Show Key ----
         var show = showRepository.findById(showKey);
         if (show.isEmpty())
@@ -60,8 +61,12 @@ public class TicketsControllers {
             throw new InvalidParameterException(String.format(
                 "Seat (rowNum:%d, seatNum:%d) already booked, please choose other.",
                 rowNum, seatNum));
+        // ---- Validation: Price ----
+        if (price <= 0)
+            throw new InvalidParameterException(
+                "Invalid ticket price. Price has to be greater than zero.");
         // ---- Sell ticket ----
-        var ticket = new Ticket(showKey, rowNum, seatNum, request.getPrice());
+        var ticket = new Ticket(showKey, rowNum, seatNum, price);
         // ---- Store ticket ----
         ticketRepository.saveAndFlush(ticket);
     }
