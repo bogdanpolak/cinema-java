@@ -1,9 +1,9 @@
-package com.exercise.cinema.controllers;
+package com.exercise.cinema.models;
 
 public class BuyTicketRequest {
-    String showKey;
-    int rowNum;
-    int seatNum;
+    private String showKey;
+    private int rowNum;
+    private int seatNum;
 
     public String getShowKey() {
         return showKey;

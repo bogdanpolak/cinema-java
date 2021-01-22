@@ -30,39 +30,39 @@ public class TicketsControllers {
     @PostMapping(consumes = "application/json")
     @ResponseStatus(HttpStatus.CREATED)
     public void buyTicket(@RequestBody BuyTicketRequest request) throws InvalidParameterException {
+        var showKey = request.getShowKey();
+        var rowNum = request.getRowNum();
+        var seatNum = request.getSeatNum();
         // ---- Validation: Show Key ----
-        var show = showRepository.findById(request.showKey);
+        var show = showRepository.findById(showKey);
         if (show.isEmpty())
             throw new InvalidParameterException(String.format(
                 "Show Key '%s' is invalid and can't be found in database",
-                request.showKey));
+                showKey));
         // ---- Get room rows and seats ----
         var roomId = show.get().getRoomId();
         var room = roomRepository.findById(roomId).get();
         var rows = room.getRows();
         var seats = room.getColumns();
         // ---- Validate seat position ----
-        if (request.rowNum<1 || request.rowNum>rows)
+        if (rowNum<1 || rowNum>rows)
             throw new InvalidParameterException(String.format(
                 "Incorrect row value: %d. In room '%s' there are %d rows.",
-                request.rowNum, room.getName(), rows));
-        if (request.seatNum<1 || request.seatNum>seats)
+                rowNum, room.getName(), rows));
+        if (seatNum<1 || seatNum>seats)
             throw new InvalidParameterException(String.format(
                 "Incorrect seat value: %d. In row %d there are %d seats.",
-                request.seatNum, request.rowNum, seats));
+                seatNum, rowNum, seats));
         // ---- Verification is seat booked ----
         Ticket existingTicket = ticketRepository.findBySeat(
-                request.showKey,
-                request.rowNum,
-                request.seatNum);
+                showKey, rowNum, seatNum);
         if (existingTicket != null)
             throw new InvalidParameterException(String.format(
                 "Seat (rowNum:%d, seatNum:%d) already booked, please choose other.",
-                request.rowNum, request.seatNum));
+                rowNum, seatNum));
         // ---- Sell ticket ----
-        var ticket = new Ticket(request.showKey,
-                request.rowNum, request.seatNum,
-                calcTicketPrice(request.rowNum,rows));
+        var ticket = new Ticket(showKey, rowNum, seatNum,
+                calcTicketPrice(rowNum,rows));
         // ---- Store ticket ----
         ticketRepository.saveAndFlush(ticket);
     }
